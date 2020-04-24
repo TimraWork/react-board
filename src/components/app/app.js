@@ -4,16 +4,33 @@ import AppHeader from '../app-header/app-header';
 import SearchPanel from '../search-panel/search-panel';
 import TodoList from '../todo-list/todo-list';
 import ItemStatusFilter from '../item-status-filter/item-status-filter';
+import AddItem from '../add-item/add-item';
 
 import './app.css';
 
 export default class App extends Component {
+	minArrIdx = 4;
+
 	state = {
 		todoData: [
 			{ label: 'Drink Coffee', important: false, id: 1 },
 			{ label: 'Make Awesome App', important: false, id: 2 },
 			{ label: 'Have a lunch', important: false, id: 3 },
 		],
+	};
+
+	onAddItem = (text) => {
+		const newItem = {
+			label: text,
+			important: false,
+			id: this.minArrIdx++,
+		};
+		this.setState(({ todoData }) => {
+			const newArr = [...todoData, newItem];
+			return {
+				todoData: newArr,
+			};
+		});
 	};
 
 	onDeleteItem = (id) => {
@@ -41,6 +58,7 @@ export default class App extends Component {
 					todos={this.state.todoData}
 					onDeleted={this.onDeleteItem}
 				/>
+				<AddItem onAddItem={this.onAddItem} />
 			</div>
 		);
 	}
