@@ -30,7 +30,7 @@ export default class App extends Component {
 				</div>
 				<TodoList
 					todos={this.state.todoData}
-					onClose={(id) => console.log('del', id)}
+					onDeleted={(id) => console.log('del', id)}
 				/>
 			</div>
 		);
