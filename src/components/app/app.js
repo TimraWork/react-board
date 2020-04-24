@@ -28,10 +28,9 @@ export default class App extends Component {
 					<SearchPanel />
 					<ItemStatusFilter />
 				</div>
-
 				<TodoList
 					todos={this.state.todoData}
-					onDeleted={(id) => console.log('del', id)}
+					onClose={(id) => console.log('del', id)}
 				/>
 			</div>
 		);
