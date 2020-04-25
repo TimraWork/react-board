@@ -13,11 +13,46 @@ export default class App extends Component {
 
 	state = {
 		todoData: [
-			{ label: 'Drink Coffee', important: false, id: 1 },
-			{ label: 'Make Awesome App', important: false, id: 2 },
-			{ label: 'Have a lunch', important: false, id: 3 },
+			this.createTodoItem('Drink Coffee'),
+			this.createTodoItem('Make Awesome App'),
+			this.createTodoItem('Make Awesome App'),
 		],
 	};
+
+	onToggleImportant = (id) => {
+		this.setState(({ todoData }) => {
+			// Нам нельзя изменять существующий стейт todoData
+			// console.log(todoData);
+			// по id находим индекс элемента
+			const idx = todoData.findIndex((el) => el.id === id);
+			// console.log(idx);
+
+			// 1. Update object
+			const oldItem = todoData[idx]; // найдем элемент
+			const newItem = { ...oldItem, important: !oldItem.important }; // Изменим свойство
+
+			// 2. Create new object
+			const newArray = [
+				...todoData.slice(0, idx),
+				newItem,
+				...todoData.slice(idx + 1),
+			];
+			// console.log(newArray);
+
+			return {
+				todoData: newArray,
+			};
+		});
+	};
+
+	createTodoItem(label) {
+		return {
+			label,
+			important: false,
+			done: false,
+			id: this.minArrIdx++,
+		};
+	}
 
 	onAddItem = (text) => {
 		const newItem = {
@@ -25,6 +60,7 @@ export default class App extends Component {
 			important: false,
 			id: this.minArrIdx++,
 		};
+		// this.createTodoItem('Drink Coffee'),
 		this.setState(({ todoData }) => {
 			const newArr = [...todoData, newItem];
 			return {
@@ -57,6 +93,7 @@ export default class App extends Component {
 				<TodoList
 					todos={this.state.todoData}
 					onDeleted={this.onDeleteItem}
+					onToggleImportant={this.onToggleImportant}
 				/>
 				<AddItem onAddItem={this.onAddItem} />
 			</div>
