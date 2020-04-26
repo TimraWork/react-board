@@ -19,28 +19,36 @@ export default class App extends Component {
 		],
 	};
 
+	toggle(arr, id, propName) {
+		// Нам нельзя изменять существующий стейт todoData
+		// console.log(todoData);
+		// по id находим индекс элемента
+		const idx = arr.findIndex((el) => el.id === id);
+		// console.log(idx);
+
+		// 1. Update object
+		const oldItem = arr[idx]; // найдем элемент по индексу
+		const newItem = { ...oldItem, [propName]: !oldItem[propName] }; // Изменим свойство
+
+		// 2. Create new object
+		return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
+		// console.log(newArray);
+	}
+
 	onToggleImportant = (id) => {
 		this.setState(({ todoData }) => {
-			// Нам нельзя изменять существующий стейт todoData
-			// console.log(todoData);
-			// по id находим индекс элемента
-			const idx = todoData.findIndex((el) => el.id === id);
-			// console.log(idx);
-
-			// 1. Update object
-			const oldItem = todoData[idx]; // найдем элемент
-			const newItem = { ...oldItem, important: !oldItem.important }; // Изменим свойство
-
-			// 2. Create new object
-			const newArray = [
-				...todoData.slice(0, idx),
-				newItem,
-				...todoData.slice(idx + 1),
-			];
-			// console.log(newArray);
-
+			// 3. Set new object to state
 			return {
-				todoData: newArray,
+				todoData: this.toggle(todoData, id, 'important'),
+			};
+		});
+	};
+
+	onToggleDone = (id) => {
+		this.setState(({ todoData }) => {
+			// 3. Set new object to state
+			return {
+				todoData: this.toggle(todoData, id, 'done'),
 			};
 		});
 	};
@@ -83,9 +91,14 @@ export default class App extends Component {
 	};
 
 	render() {
+		const { todoData } = this.state;
+
+		const doneCount = todoData.filter((el) => el.done).length;
+		const toDoCount = todoData.length - doneCount;
+
 		return (
 			<div className="todo-app">
-				<AppHeader toDo={1} done={3} />
+				<AppHeader toDo={toDoCount} done={doneCount} />
 				<div className="top-panel d-flex">
 					<SearchPanel />
 					<ItemStatusFilter />
@@ -93,6 +106,7 @@ export default class App extends Component {
 				<TodoList
 					todos={this.state.todoData}
 					onDeleted={this.onDeleteItem}
+					onToggleDone={this.onToggleDone}
 					onToggleImportant={this.onToggleImportant}
 				/>
 				<AddItem onAddItem={this.onAddItem} />
