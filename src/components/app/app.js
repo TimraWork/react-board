@@ -15,13 +15,15 @@ export default class App extends Component {
 		return {
 			label,
 			important: false,
-			done: false,
+			done: true,
 			id: this.minArrIdx++,
 		};
 	}
 
 	state = {
 		todoData: [
+			{ label: 'NOT DONE1', important: false, done: false, id: 1 },
+			{ label: 'NOT DONE2', important: false, done: false, id: 2 },
 			this.createTodoItem('Drink Coffee'),
 			this.createTodoItem('Make Awesome App'),
 			this.createTodoItem('Lorem IPSUM'),
@@ -29,6 +31,7 @@ export default class App extends Component {
 			this.createTodoItem('KU KU KU KU'),
 		],
 		query: '',
+		filter: 'all',
 	};
 
 	toggle(arr, id, propName) {
@@ -86,36 +89,52 @@ export default class App extends Component {
 		});
 	};
 
-	filterTodoData = () => {
-		const findEl = this.state.todoData.filter(
-			(el) =>
-				el.label.toLowerCase().indexOf(this.state.query.toLowerCase()) >
-				-1
-		);
-		return findEl;
-	};
-
-	onFilter = (jopa) => {
+	onSearchQuery = (jopa) => {
 		this.setState({
 			query: jopa,
 		});
 	};
 
+	searchTodoData = () => {
+		const data = this.state.todoData;
+		const search_text = this.state.query;
+		return data.filter(
+			(el) =>
+				el.label.toLowerCase().indexOf(search_text.toLowerCase()) > -1
+		);
+	};
+
+	onFilter = (filter_text) => {
+		this.setState({
+			filter: filter_text,
+		});
+	};
+
+	filterTodoData = (items) => {
+		const data = items;
+		const filter_text = this.state.filter;
+		if (filter_text === 'all') {
+			return items;
+		} else {
+			return data.filter((el) => el.done === filter_text);
+		}
+	};
+
 	render() {
-		const { todoData } = this.state;
+		const doneCount = this.searchTodoData().filter((el) => el.done).length;
+		const toDoCount = this.searchTodoData().length - doneCount;
 
-		const doneCount = todoData.filter((el) => el.done).length;
-		const toDoCount = todoData.length - doneCount;
-
+		const doneEl = this.searchTodoData();
+		console.log(doneEl);
 		return (
 			<div className="todo-app">
 				<AppHeader toDo={toDoCount} done={doneCount} />
 				<div className="top-panel d-flex">
-					<SearchPanel onFilter={this.onFilter} />
-					<ItemStatusFilter />
+					<SearchPanel onSearchQuery={this.onSearchQuery} />
+					<ItemStatusFilter onFilter={this.onFilter} />
 				</div>
 				<TodoList
-					todos={this.filterTodoData()} // результат функции
+					todos={this.filterTodoData(doneEl)} // результат функции
 					onDeleted={this.onDeleteItem} // тело функции
 					onToggleDone={this.onToggleDone}
 					onToggleImportant={this.onToggleImportant}
