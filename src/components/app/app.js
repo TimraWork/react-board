@@ -28,6 +28,7 @@ export default class App extends Component {
 			this.createTodoItem('Blabla bla bla'),
 			this.createTodoItem('KU KU KU KU'),
 		],
+		query: '',
 	};
 
 	toggle(arr, id, propName) {
@@ -85,23 +86,18 @@ export default class App extends Component {
 		});
 	};
 
-	onFilter = (searchLabel) => {
-		console.log('FILTER = ', searchLabel.toLowerCase());
+	filterTodoData = () => {
+		const findEl = this.state.todoData.filter(
+			(el) =>
+				el.label.toLowerCase().indexOf(this.state.query.toLowerCase()) >
+				-1
+		);
+		return findEl;
+	};
 
-		this.setState(({ todoData }) => {
-			if (searchLabel) {
-				const findEl = todoData.filter(
-					(el) =>
-						el.label
-							.toLowerCase()
-							.indexOf(searchLabel.toLowerCase()) >= 0
-				);
-				return {
-					todoData: findEl,
-				};
-			} else {
-				console.log('No FILTER = ', todoData);
-			}
+	onFilter = (jopa) => {
+		this.setState({
+			query: jopa,
 		});
 	};
 
@@ -119,8 +115,8 @@ export default class App extends Component {
 					<ItemStatusFilter />
 				</div>
 				<TodoList
-					todos={this.state.todoData}
-					onDeleted={this.onDeleteItem}
+					todos={this.filterTodoData()} // результат функции
+					onDeleted={this.onDeleteItem} // тело функции
 					onToggleDone={this.onToggleDone}
 					onToggleImportant={this.onToggleImportant}
 				/>
