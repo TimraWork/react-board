@@ -11,28 +11,32 @@ import './app.css';
 export default class App extends Component {
 	minArrIdx = 4;
 
+	createTodoItem(label) {
+		return {
+			label,
+			important: false,
+			done: false,
+			id: this.minArrIdx++,
+		};
+	}
+
 	state = {
 		todoData: [
 			this.createTodoItem('Drink Coffee'),
 			this.createTodoItem('Make Awesome App'),
-			this.createTodoItem('Make Awesome App'),
+			this.createTodoItem('Lorem IPSUM'),
+			this.createTodoItem('Blabla bla bla'),
+			this.createTodoItem('KU KU KU KU'),
 		],
 	};
 
 	toggle(arr, id, propName) {
-		// Нам нельзя изменять существующий стейт todoData
-		// console.log(todoData);
-		// по id находим индекс элемента
 		const idx = arr.findIndex((el) => el.id === id);
-		// console.log(idx);
 
-		// 1. Update object
 		const oldItem = arr[idx]; // найдем элемент по индексу
 		const newItem = { ...oldItem, [propName]: !oldItem[propName] }; // Изменим свойство
 
-		// 2. Create new object
 		return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
-		// console.log(newArray);
 	}
 
 	onToggleImportant = (id) => {
@@ -52,15 +56,6 @@ export default class App extends Component {
 			};
 		});
 	};
-
-	createTodoItem(label) {
-		return {
-			label,
-			important: false,
-			done: false,
-			id: this.minArrIdx++,
-		};
-	}
 
 	onAddItem = (text) => {
 		const newItem = {
@@ -90,6 +85,26 @@ export default class App extends Component {
 		});
 	};
 
+	onFilter = (searchLabel) => {
+		console.log('FILTER = ', searchLabel.toLowerCase());
+
+		this.setState(({ todoData }) => {
+			if (searchLabel) {
+				const findEl = todoData.filter(
+					(el) =>
+						el.label
+							.toLowerCase()
+							.indexOf(searchLabel.toLowerCase()) >= 0
+				);
+				return {
+					todoData: findEl,
+				};
+			} else {
+				console.log('No FILTER = ', todoData);
+			}
+		});
+	};
+
 	render() {
 		const { todoData } = this.state;
 
@@ -100,7 +115,7 @@ export default class App extends Component {
 			<div className="todo-app">
 				<AppHeader toDo={toDoCount} done={doneCount} />
 				<div className="top-panel d-flex">
-					<SearchPanel />
+					<SearchPanel onFilter={this.onFilter} />
 					<ItemStatusFilter />
 				</div>
 				<TodoList
