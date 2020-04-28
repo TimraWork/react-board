@@ -16,14 +16,14 @@ export default class ItemStatusFilter extends Component {
 				<button
 					type="button"
 					className="btn btn-outline-secondary"
-					onClick={() => this.props.onFilter(false)}
+					onClick={() => this.props.onFilter('done')}
 				>
 					Active
 				</button>
 				<button
 					type="button"
 					className="btn btn-outline-secondary"
-					onClick={() => this.props.onFilter(true)}
+					onClick={() => this.props.onFilter('active')}
 				>
 					Done
 				</button>

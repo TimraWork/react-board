@@ -31,7 +31,7 @@ export default class App extends Component {
 			this.createTodoItem('KU KU KU KU'),
 		],
 		query: '',
-		filter: 'all',
+		filter: 'all', // all, done, active
 	};
 
 	toggle(arr, id, propName) {
@@ -111,12 +111,23 @@ export default class App extends Component {
 	};
 
 	filterTodoData = (items) => {
-		const data = items;
-		const filter_text = this.state.filter;
-		if (filter_text === 'all') {
-			return items;
-		} else {
-			return data.filter((el) => el.done === filter_text);
+		// const data = items;
+		// const filter_text = this.state.filter;
+		// if (filter_text === 'all') {
+		// 	return items;
+		// } else {
+		// 	return data.filter((el) => el.done === filter_text);
+		// }
+
+		switch (this.state.filter) {
+			case 'all':
+				return items;
+			case 'active':
+				return items.filter((item) => !item.done);
+			case 'done':
+				return items.filter((item) => item.done);
+			default:
+				return items;
 		}
 	};
 
