@@ -31,7 +31,7 @@ export default class App extends Component {
 			this.createTodoItem('KU KU KU KU'),
 		],
 		query: '',
-		filter: 'all', // all, done, active
+		filter: 'active', // all, done, active
 	};
 
 	toggle(arr, id, propName) {
@@ -136,13 +136,16 @@ export default class App extends Component {
 		const toDoCount = this.searchTodoData().length - doneCount;
 
 		const doneEl = this.searchTodoData();
-		console.log(doneEl);
+		const filtered = this.state.filter;
 		return (
 			<div className="todo-app">
 				<AppHeader toDo={toDoCount} done={doneCount} />
 				<div className="top-panel d-flex">
 					<SearchPanel onSearchQuery={this.onSearchQuery} />
-					<ItemStatusFilter onFilter={this.onFilter} />
+					<ItemStatusFilter
+						onFilter={this.onFilter}
+						filtered={filtered}
+					/>
 				</div>
 				<TodoList
 					todos={this.filterTodoData(doneEl)} // результат функции
